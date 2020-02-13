@@ -1,0 +1,56 @@
+:host {
+  --placeholder-color: initial;
+  --placeholder-font-style: initial;
+  --placeholder-font-weight: initial;
+  --placeholder-opacity: 0.5;
+  --padding-top: 0;
+  --padding-end: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --background: transparent;
+  --color: initial;
+}
+// Native Text Input
+// --------------------------------------------------
+
+.native-input {
+  display: inline-block;
+
+  flex: 1;
+
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  box-sizing: border-box;
+  appearance: none;
+
+  &:invalid {
+    box-shadow: none;
+  }
+
+
+  border: 1px solid red;
+}
+
+// Input Has focus
+// --------------------------------------------------
+// When the input has focus, then the input cover should be hidden
+
+:host(.has-focus) {
+  pointer-events: none;
+}
+
+:host(.has-focus) input {
+  pointer-events: auto;
+}
+
+.native-input[disabled] {
+  opacity: 0.4;
+}

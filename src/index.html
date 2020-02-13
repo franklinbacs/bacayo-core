@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>Bacayo Core</title>
+
+    <script type="module" src="/build/bacayocore.esm.js"></script>
+    <script nomodule src="/build/bacayocore.js"></script>
+    <style>
+      .container {
+        display: grid;
+        height: 2rem;
+        gap: 2rem;
+      }
+
+      .item1 {
+        grid-row: 1;
+        grid-column: 1;
+        height: 100px;
+        border: 1px dashed blue;
+      }
+
+      .item2 {
+        grid-row: 1;
+        grid-column: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <my-component
+      first="Stencil"
+      last="'Don't call me a framework' JS"
+    ></my-component>
+
+    <div class="container">
+      <div class="item1">
+        <fcb-input id="fcb"></fcb-input>
+      </div>
+      <div class="item2">
+        <fcb-input></fcb-input>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var component = document.getElementById("fcb");
+        component.addEventListener("fcbEnter", ev => {
+          console.log(ev.detail.value);
+        });
+
+        component.addEventListener("fcbBlur", () => {
+          console.log("bluring...");
+        });
+
+        setInterval(() => {
+          component.setAttribute('value', 100);
+        }, 10000)
+      })();
+    </script>
+  </body>
+</html>
