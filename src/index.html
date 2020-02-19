@@ -43,10 +43,15 @@
       <div class="item2">
         <fcb-input></fcb-input>
       </div>
+      <div>
+        <fcb-spinner id="mySpinner" show="true"></fcb-spinner>
+      </div>
     </div>
     <script>
       (function() {
         var component = document.getElementById("fcb");
+        var mySpinner = document.getElementById("mySpinner");
+
         component.addEventListener("fcbEnter", ev => {
           console.log(ev.detail.value);
         });
@@ -55,9 +60,11 @@
           console.log("bluring...");
         });
 
-        setInterval(() => {
+        setTimeout(() => {
           component.setAttribute('value', 100);
-        }, 10000)
+          console.log(`timeout`);
+          mySpinner.setAttribute('show', false);
+        }, 5000);
       })();
     </script>
   </body>
