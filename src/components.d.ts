@@ -12,6 +12,14 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 export namespace Components {
   interface FcbInput {
     /**
+    * If set to false, it will only allow whole numbers. Default to allow decimal/floating values
+    */
+    'allowDecimal': boolean;
+    /**
+    * If set to false, it only accept non-negative values. Default to allow (-) character
+    */
+    'allowNegative': boolean;
+    /**
     * If `true`, it will select the value of the input if focus. It is default to select/true.
     */
     'autoselect': boolean;
@@ -81,6 +89,14 @@ declare global {
 
 declare namespace LocalJSX {
   interface FcbInput {
+    /**
+    * If set to false, it will only allow whole numbers. Default to allow decimal/floating values
+    */
+    'allowDecimal'?: boolean;
+    /**
+    * If set to false, it only accept non-negative values. Default to allow (-) character
+    */
+    'allowNegative'?: boolean;
     /**
     * If `true`, it will select the value of the input if focus. It is default to select/true.
     */

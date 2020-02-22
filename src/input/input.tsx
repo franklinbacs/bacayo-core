@@ -39,8 +39,19 @@ export class InputComponent {
   @Prop({ mutable: true }) value?: string | null = "";
 
   @Watch("value")
-  valueWatch() {
+  valueWatch(val: any) {
     this.valueDirtyForEmit = true;
+
+    // check if value allow negatives or already has negative character (-)
+    if (val.length && val.indexOf("-") === 0) {
+      this.hasNegativeSymbol = true;
+    } else if (val.length && val.indexOf("-") < 0) {
+      this.hasNegativeSymbol = false;
+    } else if (val.length && val.indexOf("-") > 0) {
+      // remove the misplaced neagative
+      const _newVal = val.replace("-", "");
+      this.value = _newVal;
+    }
   }
 
   @Prop() displayType?: "dollar" | "time" = "dollar";
@@ -49,6 +60,16 @@ export class InputComponent {
    * If `true`, it will select the value of the input if focus. It is default to select/true.
    */
   @Prop() autoselect = true;
+
+  /**
+   * If set to false, it only accept non-negative values. Default to allow (-) character
+   */
+  @Prop() allowNegative = true;
+
+  /**
+   * If set to false, it will only allow whole numbers. Default to allow decimal/floating values
+   */
+  @Prop() allowDecimal = true;
   /**
    * Event emitted on keyboard input.
    */
@@ -122,6 +143,11 @@ export class InputComponent {
     this.fcbInput.emit(ev as KeyboardEvent);
   };
 
+  /**
+   * A flag that monitor if the value already a negative character (-)
+   */
+  private hasNegativeSymbol = false;
+
   private onKeydown = (ev: KeyboardEvent) => {
     if (this.shouldClearOnEdit()) {
       // check if the input value change after it was blured and edited
@@ -134,60 +160,73 @@ export class InputComponent {
       this.didBlurAfterEdit = false;
     }
 
-    // allow only valid numeric characters and other acceptable keys
-    const code = ev.keyCode;
-    let isValid = false;
+    if (
+      [46, 8, 9, 27, 13, 109, 110, 189, 190].indexOf(ev.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (ev.keyCode === 65 && (ev.ctrlKey || ev.metaKey)) ||
+      // Allow: Ctrl+C
+      (ev.keyCode === 67 && (ev.ctrlKey || ev.metaKey)) ||
+      // Allow: Ctrl+V
+      (ev.keyCode === 86 && (ev.ctrlKey || ev.metaKey)) ||
+      // Allow: Ctrl+X
+      (ev.keyCode === 88 && (ev.ctrlKey || ev.metaKey)) ||
+      // Allow: home, end, left, right
+      (ev.keyCode >= 35 && ev.keyCode <= 39)
+    ) {
+      // Tab = 9 and Enter = 13
+      if (ev.keyCode === 9 || ev.keyCode === 13) {
+        this.enterOrTab();
+      }
 
-    if (this.isSysKey(code) || code === 8 || code === 46) {
-        isValid = true;
+      // allow only one decimal point (190 and 110 (numeric keyapad))
+      if (ev.keyCode === 190 || ev.keyCode === 110) {
+        if (this.getValue().indexOf(".") > -1) {
+          ev.preventDefault();
+        }
+      }
+
+      // allow only one negative '-' character (109, 189)
+      if (ev.keyCode === 109 || ev.keyCode === 189) {
+        if (!this.allowNegative || this.hasNegativeSymbol) {
+          ev.preventDefault();
+        }
+      }
+
+      // let it happen, (let the key do its default behaviour)
+      return;
     }
 
-    if (ev.shiftKey || ev.altKey || ev.ctrlKey) {
-        isValid = true ;
+    // make sure that it only allow numbers
+    if (
+      (ev.shiftKey || ev.keyCode < 48 || ev.keyCode > 57) &&
+      (ev.keyCode < 96 || ev.keyCode > 105)
+    ) {
+      ev.preventDefault();
     }
 
-    if (code >= 48 && code <= 57) {
-      isValid = true;
-    }
+    // allow 0-9 digits
+    if (
+      (ev.keyCode >= 48 && ev.keyCode <= 57) ||
+      (ev.keyCode >= 96 && ev.keyCode <= 105)
+    ) {
+      const _currVal: string = this.getValue();
+      const _nextVal: string = _currVal.concat(ev.key);
 
-    if (code >= 96 && code <= 105) {
-      isValid = true;
+      if (!this.allowDecimal) {
+        // no decimal is allowed
+        const rxNoDec: RegExp = new RegExp(/^\d*$/g);
+        if (_nextVal && !String(_nextVal).match(rxNoDec) && !this.hasFocus) {
+          ev.preventDefault();
+        }
+      }
     }
-
-    if (isValid) {
-      this.enterOrTab(ev)
-    } else {
-       ev.preventDefault();
-       ev.stopPropagation();
-      } 
   };
 
-  private isSysKey(code) {
-    if (code === 40 || code === 38 ||
-            code === 13 || code === 39 || code === 27 ||
-            code === 35 ||
-            code === 36 || code === 37 || code === 38 ||
-            code === 16 || code === 17 || code === 18 ||
-            code === 20 || code === 37 || code === 9 ||
-            code === 190 || code == 110 ||    // decimal points
-            code === 8 ||                     // backspace
-            (code >= 112 && code <= 123)) 
-            {
-        return true;
-    }
-
-    return false;
-}
-
-  private enterOrTab(ev: KeyboardEvent) {
-    // check if keycode is ENTER or TAB then emit value
-    const ENTER = 13;
-    const TAB = 9;
-
-    if ((ev.keyCode === ENTER || ev.keyCode === TAB) && this.valueDirtyForEmit) {
-        const val = this.getValue() ? +this.getValue() : 0;
-        this.fcbEnter.emit({ value: val });
-        this.valueDirtyForEmit = false;
+  private enterOrTab() {
+    if (this.valueDirtyForEmit) {
+      const val = this.getValue() ? +this.getValue() : 0;
+      this.fcbEnter.emit({ value: val });
+      this.valueDirtyForEmit = false;
     }
   }
 
