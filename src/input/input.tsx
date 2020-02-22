@@ -70,6 +70,12 @@ export class InputComponent {
    * If set to false, it will only allow whole numbers. Default to allow decimal/floating values
    */
   @Prop() allowDecimal = true;
+
+  /**
+   * A numeric value to set the number of decimal places allowed. Default to 2 decimal values
+   */
+  // @Prop() decimalPlaces = 2;
+  
   /**
    * Event emitted on keyboard input.
    */
@@ -218,7 +224,19 @@ export class InputComponent {
         if (_nextVal && !String(_nextVal).match(rxNoDec) && !this.hasFocus) {
           ev.preventDefault();
         }
-      }
+      } 
+      // else {
+        // limit 4 digits after the decimal point
+        // const regExPattern = "/^-?\d*\.?(\d{0," + this.decimalPlaces.toString() + "})?$/g";
+        // if (
+        //   // _nextVal &&
+        //   !String(_nextVal).match(rxWithDecimalPlacesSet) 
+        //   // && !this.hasFocus
+        // ) {
+        //   ev.preventDefault();
+        //   console.log(rxWithDecimalPlacesSet);
+        // }
+      // }
     }
   };
 

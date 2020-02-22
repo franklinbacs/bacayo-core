@@ -44,20 +44,6 @@ export namespace Components {
     */
     'show': boolean;
   }
-  interface MyComponent {
-    /**
-    * The first name
-    */
-    'first': string;
-    /**
-    * The last name
-    */
-    'last': string;
-    /**
-    * The middle name
-    */
-    'middle': string;
-  }
 }
 
 declare global {
@@ -74,16 +60,9 @@ declare global {
     prototype: HTMLFcbSpinnerElement;
     new (): HTMLFcbSpinnerElement;
   };
-
-  interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {}
-  var HTMLMyComponentElement: {
-    prototype: HTMLMyComponentElement;
-    new (): HTMLMyComponentElement;
-  };
   interface HTMLElementTagNameMap {
     'fcb-input': HTMLFcbInputElement;
     'fcb-spinner': HTMLFcbSpinnerElement;
-    'my-component': HTMLMyComponentElement;
   }
 }
 
@@ -138,25 +117,10 @@ declare namespace LocalJSX {
     */
     'show'?: boolean;
   }
-  interface MyComponent {
-    /**
-    * The first name
-    */
-    'first'?: string;
-    /**
-    * The last name
-    */
-    'last'?: string;
-    /**
-    * The middle name
-    */
-    'middle'?: string;
-  }
 
   interface IntrinsicElements {
     'fcb-input': FcbInput;
     'fcb-spinner': FcbSpinner;
-    'my-component': MyComponent;
   }
 }
 
@@ -168,7 +132,6 @@ declare module "@stencil/core" {
     interface IntrinsicElements {
       'fcb-input': LocalJSX.FcbInput & JSXBase.HTMLAttributes<HTMLFcbInputElement>;
       'fcb-spinner': LocalJSX.FcbSpinner & JSXBase.HTMLAttributes<HTMLFcbSpinnerElement>;
-      'my-component': LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
     }
   }
 }

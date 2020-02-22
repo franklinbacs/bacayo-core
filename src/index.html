@@ -14,35 +14,35 @@
       .container {
         display: grid;
         height: 2rem;
-        gap: 2rem;
+        gap: 1rem;
       }
 
-      .item1 {
+      .row1 {
         grid-row: 1;
         grid-column: 1;
         height: 100px;
-        border: 1px dashed blue;
       }
 
-      .item2 {
-        grid-row: 1;
-        grid-column: 2;
+      .row2 {
+        grid-row: 2;
+        grid-column: 1;
+        width: 100px;
+        border: 1px solid grey;
       }
+
     </style>
   </head>
   <body>
-    <my-component
-      first="Stencil"
-      last="'Don't call me a framework' JS"
-    ></my-component>
-
     <div class="container">
-      <div class="item1">
-        <fcb-input id="fcb"></fcb-input>
+      <div class="row1">
+        <p>Allow only valid numeric values.</p>
+        <ul>
+          <li>one decimal point allowed</li>
+          <li>one negative symbol allowed</li>
+          <li>fires and event on ENTER and TAB keys</li>
+        </ul>
       </div>
-      <div class="item2">
-        <fcb-input></fcb-input>
-      </div>
+      <fcb-input id="fcb" class="row2"></fcb-input>
       <div>
         <fcb-spinner id="mySpinner" show="true"></fcb-spinner>
       </div>
@@ -61,8 +61,6 @@
         });
 
         setTimeout(() => {
-          component.setAttribute('value', 100);
-          console.log(`timeout`);
           mySpinner.setAttribute('show', false);
         }, 5000);
       })();
